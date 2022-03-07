@@ -1,7 +1,7 @@
 class Subject:
     # Both of the following two methods take an
     # observer as an argument; that is, the observer
-    # to be registered ore removed.
+    # to be registered or removed.
     def registerObserver(observer):
         pass
     def removeObserver(observer):
@@ -79,7 +79,79 @@ class CurrentConditionsDisplay(Observer):
               "and pressure", self.pressure)
         
 # TODO: implement StatisticsDisplay class and ForecastDisplay class.
+class StatiticsDisplay(Observer):
     
+    def __init__(self, weatherData):
+        self.temperature = 0
+        self.humidity = 0
+        self.pressure = 0
+        self.temperature_avg = 0
+        self.humidity_avg = 0
+        self.pressure_avg = 0
+        self.temperature_min = 0
+        self.humidity_min = 0
+        self.pressure_min = 0
+        self.temperature_max = 0
+        self.humidity_max = 0
+        self.pressure_max = 0
+
+        # save the ref in an attribute.
+        weatherData.registerObserver(self)
+
+    def calculate_avg(self):
+        self.temperature_avg = (self.temperature_avg * 9 + self.temperature) / 10
+        self.humidity_avg = (self.humidity_avg * 9 + self.humidity) / 10
+        self.pressure_avg = (self.pressure_avg * 9 + self.pressure) / 10
+    def calculate_min(self):
+        if self.temperature_min == 0:
+            self.temperature_min = self.temperature
+        elif self.temperature < self.temperature_min:
+            self.temperature_min = self.temperature
+        if self.humidity_min == 0:
+            self.humidity_min = self.humidity
+        elif self.humidity < self.humidity_min:
+            self.humidity_min = self.humidity
+        if self.pressure_min == 0:
+            self.pressure_min = self.pressure
+        elif self.pressure < self.pressure_min:
+            self.pressure_min = self.pressure
+    def calculate_max(self):
+        if self.temperature_max == 0:
+            self.temperature_max = self.temperature
+        elif self.temperature > self.temperature_max:
+            self.temperature_max = self.temperature
+        if self.humidity_max == 0:
+            self.humidity_max = self.humidity
+        elif self.humidity > self.humidity_max:
+            self.humidity_max = self.humidity
+        if self.pressure_max == 0:
+            self.pressure_max = self.pressure
+        elif self.pressure > self.pressure_max:
+            self.pressure_max = self.pressure
+
+    def update(self, temperature, humidity, pressure):
+        self.temperature = temperature
+        self.humidity = humidity
+        self.pressure = pressure
+        self.calculate_avg()
+        self.calculate_min()
+        self.calculate_max()
+        self.display()
+
+    def display(self):
+        print("Current Statistics:")
+        print("Temperature:")
+        print("\tAvg:", self.temperature_avg)
+        print("\tMin:", self.temperature_min)
+        print("\tMax:", self.temperature_max)
+        print("Humidity:")
+        print("\tAvg:", self.humidity_avg)
+        print("\tMin:", self.humidity_min)
+        print("\tMax:", self.humidity_max)
+        print("Pressure:")
+        print("\tAvg:", self.pressure_avg)
+        print("\tMin:", self.pressure_min)
+        print("\tMax:", self.pressure_max)
     
 class WeatherStation:
     def main(self):
