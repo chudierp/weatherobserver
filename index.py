@@ -1,7 +1,7 @@
 class Subject:
     # Both of the following two methods take an
     # observer as an argument; that is, the observer
-    # to be registered or removed.
+    # to be registered ore removed.
     def registerObserver(observer):
         pass
     def removeObserver(observer):
@@ -45,6 +45,7 @@ class WeatherData(Subject):
         # from the Weather Station.
         for ob in self.observers:
             ob.update(self.temperature, self.humidity, self.pressure)
+    
     def measurementsChanged(self):
         self.notifyObservers()
     
@@ -74,7 +75,7 @@ class CurrentConditionsDisplay(Observer):
         self.display()
         
     def display(self):
-        print("Current conditions:", self.temerature, 
+        print("Current conditions:", self.temperature, 
               "F degrees and", self.humidity,"[%] humidity",
               "and pressure", self.pressure)
         
@@ -153,7 +154,7 @@ class StatiticsDisplay(Observer):
         print("\tMin:", self.pressure_min)
         print("\tMax:", self.pressure_max)
 
-class ForecastDisplay:
+class ForecastDisplay(Observer):
     def __init__(self, weatherData):
         self.temperature = 0
         self.humidity = 0
@@ -171,7 +172,8 @@ class ForecastDisplay:
         print("Forecast conditions:", self.temperature, "F degrees and", self.humidity,"[%] humidity",
               "and pressure", self.pressure)
     
-class WeatherStation:
+    
+class WeatherStation(Observer):
     def main(self):
         weather_data = WeatherData()
         current_display = CurrentConditionsDisplay(weather_data)
@@ -179,15 +181,8 @@ class WeatherStation:
         # TODO: Create two objects from StatisticsDisplay class and 
         # ForecastDisplay class. Also, register them to the concrete instance
         # of the Subject class so they get the measurements' updates.
-        
-        # The StatisticsDisplay class should keep track of the min/average/max
-        # measurements and display them.
-        
-        # The ForecastDisplay class shows the weather forecast based on the current
-        # temperature, humidity and pressure. Use the following formulas :
-        # forcast_temp = temperature + 0.11 * humidity + 0.2 * pressure
-        # forcast_humadity = humidity - 0.9 * humidity
-        # forcast_pressure = pressure + 0.1 * temperature - 0.21 * pressure
+        display_statistics = StatiticsDisplay(weather_data)
+        display_forecast = ForecastDisplay(weather_data)
         
         weather_data.setMeasurements(80, 65,30.4)
         weather_data.setMeasurements(82, 70,29.2)
@@ -196,7 +191,8 @@ class WeatherStation:
         # un-register the observer
         weather_data.removeObserver(current_display)
         weather_data.setMeasurements(120, 100,1000)
-
+    
+        
  
 if __name__ == "__main__":
     w = WeatherStation()
