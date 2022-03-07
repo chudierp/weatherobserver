@@ -152,6 +152,24 @@ class StatiticsDisplay(Observer):
         print("\tAvg:", self.pressure_avg)
         print("\tMin:", self.pressure_min)
         print("\tMax:", self.pressure_max)
+
+class ForecastDisplay:
+    def __init__(self, weatherData):
+        self.temperature = 0
+        self.humidity = 0
+        self.pressure = 0
+        self.weatherData = weatherData
+        self.weatherData.registerObserver(self)
+
+    def update(self, temperature, humidity, pressure):
+        self.temperature = self.weatherData.temperature + 0.11 * self.weatherData.humidity + 0.2 * self.weatherData.pressure
+        self.humidity = self.weatherData.humidity - 0.9 * self.weatherData.humidity
+        self.pressure = self.weatherData.pressure + 0.01 * self.weatherData.temperature - 0.21 * self.weatherData.pressure
+        self.display()
+
+    def display(self):
+        print("Forecast conditions:", self.temperature, "F degrees and", self.humidity,"[%] humidity",
+              "and pressure", self.pressure)
     
 class WeatherStation:
     def main(self):
